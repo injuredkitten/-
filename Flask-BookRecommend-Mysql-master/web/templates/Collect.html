@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="static/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="static/Flat-UI/dist/css/flat-ui.min.css"/>
+    <script src="static/Flat-UI/dist/js/vendor/jquery.min.js"></script>
+    <script src="static/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="static/Flat-UI/dist/js/flat-ui.min.js"></script>
+    <title></title>
+    <style>
+        body {
+            margin-top: 100px; /* 将页面内容下移100px */
+        }
+        .row{
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        p {
+            white-space: nowrap;
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .line-center{
+            line-height:50px;
+            text-align: center;
+        }
+        .row input{
+            width: 50px;
+        }
+        .list-group-item:hover{
+            background: #27ae60;
+        }
+        .list-group-item div:first-child:hover{
+            cursor: pointer;
+        }
+        .navbar-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-header .book-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-right: 10px;
+            position: relative;
+            left: -120px;
+        }
+
+        .navbar-header .navbar-brand {
+            font-size: 22px;
+            position: relative;
+            left: -40px;
+            margin: 0;
+        }
+
+        .navbar-static-top {
+            background-color: black;
+            color: white;
+            position: fixed; /* Fix the navbar at the top */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000; /* Make sure it stays above other content */
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .navbar-static-top .navbar-brand,
+        .navbar-static-top .nav > li > a {
+            color: white;
+        }
+
+        .navbar-static-top .navbar-brand:hover,
+        .navbar-static-top .nav > li > a:hover {
+            color: #cccccc;
+        }
+
+        /* 默认的取消收藏按钮样式 */
+        .btn-danger {
+            background-color: white;  /* 默认背景色为白色 */
+            color: black;  /* 默认文字颜色为黑色 */
+            font-size: 16px;  /* 默认字体大小 */
+            border: 1px solid #ccc;  /* 默认边框颜色 */
+            transition: all 0.3s ease;  /* 增加过渡效果 */
+        }
+
+        /* 悬停时的按钮样式 */
+        .btn-danger:hover {
+            background-color: black;  /* 悬停时背景色变为黑色 */
+            color: white;  /* 悬停时文字颜色变为白色 */
+            font-size: 18px;  /* 悬停时字体放大 */
+            border-color: black;  /* 悬停时边框颜色变为黑色 */
+        }
+        /* 图书内容项悬停时背景变为浅灰色 */
+        .list-group-item:hover {
+            background-color: #f0f0f0;  /* 浅灰色背景 */
+        }
+
+    </style>
+    <script>
+        $(function () {
+            $('#myTabs a').click(function (e) {
+                $(this).tab('show')
+            });
+        })
+        function myClick(bookid){
+           location.href = "/bookinfo?bookid="+bookid.toString();
+        }
+        function btnClick(){
+            alert("btn");
+            return false;
+        }
+        $(function(){
+        })
+    </script>
+
+</head>
+<body>
+<!-- Static navbar -->
+<div class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <span class="book-text">BOOK</span>
+            <a class="navbar-brand" href="/">图书推荐系统</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li><a href="/historical">历史评分</a></li>
+                <li><a href="/user">个人中心</a></li>
+                <li><a href="/collect">收藏中心</a></li>
+            </ul>
+            {% if not login %}
+                <ul class="nav navbar-nav navbar-right hidden-sm">
+                    <li><a href="/loginForm">登录</a></li>
+                    <li><a href="/registerationForm">注册</a></li>
+                    <li>
+                        <a href="/order"><span class="glyphicon glyphicon-shopping-cart">书单</span></a></li>
+                </ul>
+            {% else %}
+                <ul class="nav navbar-nav navbar-right hidden-sm">
+                    <li><a>{{ useid }}</a></li>
+                    <li><a href="/logout">注销</a></li>
+                    <li>
+                        <a href="/order"><span class="glyphicon glyphicon-shopping-cart">书单</span></a></li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row thumbnail center">
+        <div class="col-sm-12">
+            <h1 class="text-center" style="margin-bottom: 30px">收藏中心</h1>
+        </div>
+        <div class="col-sm-12 thumbnail">
+            <div class="col-sm-3 line-center">编号</div>
+            <div class="col-sm-2 line-center">名称</div>
+            <div class="col-sm-2 line-center">作者</div>
+            <div class="col-sm-3 line-center">操作</div>
+        </div>
+        <div class="list-group">
+            {% for book in books %}
+            <div class="col-sm-12  list-group-item" onclick="myClick('{{book[3]}}')">
+                <div class="col-sm-3 line-center" >{{book[0]}}</div>
+                <div class="col-sm-2 line-center"><p>{{book[1]}}</p></div>
+                <div class="col-sm-2 line-center"><p>{{book[2]}}</p></div>
+                <div class="col-sm-3 line-center">
+                <a href="/delete_collect?bookid={{book[0]}}" bookid="{{ book[0] }}"><button class="btn btn-danger">取消收藏</button></a>
+                </div>
+            </div>
+        </div>
+            {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
